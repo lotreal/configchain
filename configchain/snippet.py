@@ -1,5 +1,5 @@
-from dataclasses import dataclass
-from typing import List, Dict, Optional, TypeVar, Any
+from dataclasses import dataclass, field
+from typing import List, Dict, Optional, TypeVar, Any, Callable
 from functools import reduce
 
 from .source import ConfigSource
@@ -14,28 +14,20 @@ class ConfigSnippet:
     config: Dict[str, Any]
     source: ConfigSource
 
+    profile_getter: Callable[["ConfigSnippet"], str] = field(
+        default=lambda x: x.config.get("profile", "*"),
+        repr=False
+    )
+
     def get(self, k: KT, v: Optional[VT] = None) -> VT:
         return self.config.get(k, v)
 
     @property
-    def profile(self, profile_key="profile", default_profile="*"):
-        return self.config.get(profile_key, default_profile)
+    def profile(self):
+        return self.profile_getter(self)
 
-    def __repr__(self):
-        return self.profile + ConfigSnippet.__repr__(self)
-
-
-@dataclass
-class ChainedConfigSnippet:
-    nodes: List[ConfigSnippet]
-
-    def build(self) -> "ConfigSnippet":
-        def merge_snippet(b: ConfigSnippet, p: ConfigSnippet) -> ConfigSnippet:
-            items = dict_merge(b.config, p.config, config_merger)
-            source = b.source + p.source
-            return ConfigSnippet(
-                config=items, source=source
-            )
-
-        snippet_built = reduce(merge_snippet, self.nodes)
-        return snippet_built
+    def __add__(self, other: "ConfigSnippet"):
+        return ConfigSnippet(
+            config=dict_merge(self.config, other.config, config_merger),
+            source=self.source + other.source,
+        )

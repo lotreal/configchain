@@ -1,9 +1,17 @@
 from functools import singledispatch
 from itertools import groupby
 from typing import Callable, TypeVar, Dict, List, Any
+import pprint
 
 KT = TypeVar("KT")
 VT = TypeVar("VT")
+
+
+pp = pprint.PrettyPrinter()
+
+
+def inspect(obj):
+    pp.pprint(obj)
 
 
 def list_flatten(t: list):
@@ -15,7 +23,7 @@ def list_groupby(iterable: List[Any], projection) -> List[List[Any]]:
 
 
 def dict_merge(
-        a: Dict[KT, VT], b: Dict[KT, VT], f: Callable[[VT, VT], VT]
+    a: Dict[KT, VT], b: Dict[KT, VT], f: Callable[[VT, VT], VT]
 ) -> Dict[KT, VT]:
     merged = {k: a.get(k, b.get(k)) for k in a.keys() ^ b.keys()}
     merged.update({k: f(a[k], b[k]) for k in a.keys() & b.keys()})

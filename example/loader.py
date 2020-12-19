@@ -1,28 +1,36 @@
 from configchain.config import Config
 from configchain.loader import ConfigLoader
-from configchain.snippet import ConfigSnippet, ProfileSnippet
+from configchain.snippet import ConfigSnippet
 from configchain.source import ConfigSource
-from configchain.utils import list_flatten
+from configchain.utils import list_flatten, inspect
 
 loader = ConfigLoader("./test/asset/api.yaml")
 loader.load()
 
 
 def gs(conf: dict, file: str, index, dicts: list) -> ConfigSnippet:
-    print(id(dicts))
-    return ProfileSnippet(
-        config=conf, source=ConfigSource(index=index, file=file, raw=dicts)
+    return ConfigSnippet(config=conf, source=ConfigSource(index=index, uri=file))
+
+
+snippets = list_flatten(
+    [
+        [gs(d, file, index, dicts) for index, d in enumerate(dicts)]
+        for file, dicts in loader.items()
+    ]
+)
+dict()
+# print(snippets)
+# print([p.profile for p in snippets])
+a = [
+    Config.from_snippets(
+        snippets=[
+            ConfigSnippet(config=conf, source=ConfigSource(uri=uri, index=index))
+            for index, conf in enumerate(dicts)
+        ]
     )
+    for uri, dicts in loader.items()
+]
 
-
-snippets = list_flatten([
-    [gs(d, file, index, dicts) for index, d in enumerate(dicts)]
-    for file, dicts in loader.items()
-])
-print(snippets)
-print([p.profile for p in snippets])
-print(id(snippets[1].sources.raw))
-print(id(snippets[2].sources.raw))
-print(id(snippets[3].sources.raw))
-
-Config.from_snippets("a", snippets)
+inspect(loader.items())
+print()
+inspect(a)
