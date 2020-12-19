@@ -1,0 +1,13 @@
+group: user
+name: gateway
+
+environment:
+  - ENV=${profile}
+  - PROCESSES=24
+  - DEBUG=0
+
+---
+profile: testing
+environment:
+  - PROCESSES=4
+  - DEBUG=1

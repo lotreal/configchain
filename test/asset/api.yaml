@@ -1,0 +1,17 @@
+group: user
+name: api
+
+environment:
+  - ENV=${profile}
+  - PROCESSES=12
+  - DEBUG=0
+
+---
+profile: testing
+environment:
+  - PROCESSES=2
+  - DEBUG=1
+
+---
+'@include':
+  - gateway.yaml
