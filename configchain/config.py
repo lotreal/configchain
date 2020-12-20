@@ -26,7 +26,7 @@ class Config(dict):
             profiles.update({PROFILE_GLOBAL: global_profile})
 
         config = cls(profiles)
-        config.name = global_profile.config.get("name")
+        # config.name = global_profile.config.get("name")
         return config
 
     def __add__(self, other: "Config") -> "Config":
