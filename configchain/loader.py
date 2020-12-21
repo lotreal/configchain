@@ -4,8 +4,8 @@ from os import path
 
 import yaml
 
-from configchain.snippet import ConfigSnippet
-from configchain.source import ConfigSource
+from .snippet import ConfigSnippet
+from .source import ConfigSource
 
 
 class BaseConfigLoader(OrderedDict, ABC):

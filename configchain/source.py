@@ -1,9 +1,7 @@
-from copy import deepcopy
 from dataclasses import dataclass, field
 from functools import reduce
 from typing import List, Tuple, Union
-
-from configchain.utils import list_uniq
+from .utils import list_uniq
 
 
 @dataclass(frozen=True)
@@ -23,7 +21,7 @@ class ConfigSource:
         return f"{self.uri}:{self.index}"
 
     def __add__(self, other: "ConfigSource") -> "MergedConfigSource":
-        return MergedConfigSource(sources=list([ self ])) + other
+        return MergedConfigSource(sources=list([self])) + other
 
     def find(self, key):
         return self.loader.find(self.uri, key)
@@ -45,7 +43,7 @@ class MergedConfigSource:
         self, other: Union[ConfigSource, "MergedConfigSource"]
     ) -> "MergedConfigSource":
         if isinstance(other, ConfigSource):
-            source = list([ other ])
+            source = list([other])
         if isinstance(other, MergedConfigSource):
             source = other.sources
         return MergedConfigSource(sources=list_uniq(self.sources + source))
@@ -61,9 +59,7 @@ class MergedConfigSource:
         return reduce(create_breadcrumb, self.sources, ("", ""))[1].lstrip("-")
 
     def find(self, key):
-        for loader, uri in reversed(
-            [(s.loader, s.uri) for s in self.sources]
-        ):
+        for loader, uri in reversed([(s.loader, s.uri) for s in self.sources]):
             v = loader.find(uri, key)
             if v is not None:
                 return v

@@ -1,16 +1,12 @@
 from functools import singledispatch
 from itertools import groupby
-from typing import Callable, TypeVar, Dict, List, Any
+from typing import Callable, Dict, List, Any
 import pprint
-
-KT = TypeVar("KT")
-VT = TypeVar("VT")
-
-
-pp = pprint.PrettyPrinter()
+from .types import KT, VT
 
 
 def inspect(obj):
+    pp = pprint.PrettyPrinter()
     pp.pprint(obj)
 
 

@@ -1,12 +1,9 @@
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional, TypeVar, Any, Callable
-from functools import reduce
+from typing import Dict, Optional, Any, Callable
 
-from .source import ConfigSource, MergedConfigSource
+from .source import ConfigSource
+from .types import KT, VT
 from .utils import dict_merge, config_merger
-
-KT = TypeVar("KT")
-VT = TypeVar("VT")
 
 
 @dataclass(frozen=True)

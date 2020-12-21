@@ -2,9 +2,9 @@ from functools import reduce
 from operator import add
 from typing import List, Dict
 
-from configchain.snippet import ConfigSnippet
-from configchain.types import PROFILE_GLOBAL, ProfileKey
-from configchain.utils import list_groupby, dict_merge
+from .snippet import ConfigSnippet
+from .types import PROFILE_GLOBAL, ProfileKey
+from .utils import list_groupby, dict_merge
 
 
 class Config(dict):
@@ -22,7 +22,7 @@ class Config(dict):
         }
         global_profile = profiles.pop(PROFILE_GLOBAL, None)
         if global_profile is not None:
-            profiles = { p: global_profile + c for p, c in profiles.items()}
+            profiles = {p: global_profile + c for p, c in profiles.items()}
             profiles.update({PROFILE_GLOBAL: global_profile})
 
         config = cls(profiles)
