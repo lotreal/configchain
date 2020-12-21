@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import List, Dict, Optional, TypeVar, Any, Callable
 from functools import reduce
 
-from .source import ConfigSource
+from .source import ConfigSource, MergedConfigSource
 from .utils import dict_merge, config_merger
 
 KT = TypeVar("KT")
@@ -15,8 +15,7 @@ class ConfigSnippet:
     source: ConfigSource
 
     profile_getter: Callable[["ConfigSnippet"], str] = field(
-        default=lambda x: x.config.get("profile", "*"),
-        repr=False
+        default=lambda x: x.config.get("profile", "*"), repr=False
     )
 
     def get(self, k: KT, v: Optional[VT] = None) -> VT:
@@ -31,3 +30,6 @@ class ConfigSnippet:
             config=dict_merge(self.config, other.config, config_merger),
             source=self.source + other.source,
         )
+
+    def find(self, key):
+        return self.config.get(key, self.source.find(key))

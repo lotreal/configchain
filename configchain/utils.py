@@ -22,6 +22,10 @@ def list_groupby(iterable: List[Any], projection) -> List[List[Any]]:
     return [list(it) for k, it in groupby(sorted(iterable, key=projection), projection)]
 
 
+def list_uniq(a: List) -> List:
+    return list(dict.fromkeys(a))
+
+
 def dict_merge(
     a: Dict[KT, VT], b: Dict[KT, VT], f: Callable[[VT, VT], VT]
 ) -> Dict[KT, VT]:

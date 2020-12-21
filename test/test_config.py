@@ -4,7 +4,6 @@ from conftest import snippets, snippet
 
 def test_con():
     c = Config.from_snippets(snippets=snippets())
-    print(c)
 
 
 def test_add():
@@ -18,4 +17,4 @@ def test_add():
         snippet({"profile": "test", "b": 2}),
         snippet({"profile": "stage", "b": 3}),
     ])
-    print(a + b)
+    # print(a + b)
