@@ -2,7 +2,7 @@ from configchain.loader import ConfigLoader
 
 
 def test_load():
-    loader = ConfigLoader("./test/asset/api.yaml")
+    loader = ConfigLoader("./tests/asset/api.yaml")
     loader.load()
 
     assert len(loader.keys()) == 3
