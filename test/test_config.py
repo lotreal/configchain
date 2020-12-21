@@ -14,6 +14,7 @@ def test_add():
             snippet({"profile": "prod", "a": 3}),
         ]
     )
+    assert list(a.keys()) == ["prod", "test", "*"]
     b = Config.from_snippets(
         snippets=[
             snippet({"a": 1}),
@@ -21,4 +22,8 @@ def test_add():
             snippet({"profile": "stage", "b": 3}),
         ]
     )
-    # print(a + b)
+    assert list(b.keys()) == ["stage", "test", "*"]
+    c = a + b
+    assert list(c.keys()) == ['prod', 'test', '*', 'stage']
+    assert c.get("test").get("a") == 1
+

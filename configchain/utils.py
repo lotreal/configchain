@@ -1,3 +1,5 @@
+from collections import OrderedDict
+from copy import deepcopy
 from functools import singledispatch
 from itertools import groupby
 from typing import Callable, Dict, List, Any
@@ -25,8 +27,12 @@ def list_uniq(a: List) -> List:
 def dict_merge(
     a: Dict[KT, VT], b: Dict[KT, VT], f: Callable[[VT, VT], VT]
 ) -> Dict[KT, VT]:
-    merged = {k: a.get(k, b.get(k)) for k in a.keys() ^ b.keys()}
-    merged.update({k: f(a[k], b[k]) for k in a.keys() & b.keys()})
+    merged = deepcopy(a)
+    for k in b.keys():
+        if k in merged.keys():
+            merged[k] = f(a[k], b[k])
+        else:
+            merged[k] = b[k]
     return merged
 
 

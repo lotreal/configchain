@@ -12,13 +12,11 @@ class ConfigSource:
 
     @property
     def name(self):
-        return self.uri
+        from pathlib import Path
+        return Path(self.uri).stem
 
-    # def __hash__(self):
-    #     return hash(str(self))
-
-    def __str__(self) -> str:
-        return f"{self.uri}:{self.index}"
+    def __repr__(self) -> str:
+        return f"{self.name}:{self.index}"
 
     def __add__(self, other: "ConfigSource") -> "MergedConfigSource":
         return MergedConfigSource(sources=list([self])) + other
