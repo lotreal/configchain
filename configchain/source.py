@@ -1,6 +1,9 @@
+from typing import List, Tuple, Union, Optional
 from dataclasses import dataclass, field
 from functools import reduce
-from typing import List, Tuple, Union
+from pathlib import Path
+
+from .types import ConfigKey, ConfigValue
 from .utils import list_uniq
 
 
@@ -11,29 +14,19 @@ class ConfigSource:
     loader: "ConfigLoader" = field(repr=False, default=None, hash=False)
 
     @property
-    def name(self):
-        from pathlib import Path
-
+    def name(self) -> str:
         return Path(self.uri).stem
 
     def __repr__(self) -> str:
         return f"{self.name}:{self.index}"
 
-    def __add__(self, other: "ConfigSource") -> "MergedConfigSource":
+    def __add__(self, other: "ConfigSource") -> Union["ConfigSource", "MergedConfigSource"]:
         if self == other:
             return self
         return MergedConfigSource(sources=list([self])) + other
 
-    def find(self, key):
+    def find(self, key: ConfigKey) -> Optional[ConfigValue]:
         return self.loader.find(self.uri, key)
-        if isinstance(self.source, MergedConfigSource):
-            for loader, uri in reversed(
-                [(s.loader, s.uri) for s in self.source.sources]
-            ):
-                v = self.find_from_loader(loader, uri, key)
-                if v is not None:
-                    return v
-        return None
 
 
 @dataclass(frozen=True)
@@ -59,7 +52,7 @@ class MergedConfigSource:
 
         return reduce(create_breadcrumb, self.sources, ("", ""))[1].lstrip("-")
 
-    def find(self, key):
+    def find(self, key: ConfigKey) -> Optional[ConfigValue]:
         for loader, uri in reversed([(s.loader, s.uri) for s in self.sources]):
             v = loader.find(uri, key)
             if v is not None:

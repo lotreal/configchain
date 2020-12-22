@@ -1,5 +1,4 @@
-from collections import OrderedDict
-from copy import deepcopy, copy
+from copy import copy
 from functools import singledispatch
 from itertools import groupby
 from typing import Callable, Dict, List, Any
@@ -12,7 +11,7 @@ def inspect(obj):
     pp.pprint(obj)
 
 
-def list_flatten(t: list):
+def list_flatten(t: List[List[Any]]) -> List[Any]:
     return [item for sublist in t for item in sublist]
 
 
@@ -20,13 +19,16 @@ def list_groupby(iterable: List[Any], projection) -> List[List[Any]]:
     return [list(it) for k, it in groupby(sorted(iterable, key=projection), projection)]
 
 
-def list_uniq(a: List) -> List:
+def list_uniq(a: List[Any]) -> List[Any]:
     return list(dict.fromkeys(a))
 
 
 def dict_merge(
     a: Dict[KT, VT], b: Dict[KT, VT], f: Callable[[VT, VT], VT]
 ) -> Dict[KT, VT]:
+    if b is None:
+        return a
+
     merged = copy(a)
     for k in b.keys():
         if k in merged.keys():
@@ -36,7 +38,9 @@ def dict_merge(
     return merged
 
 
-def dict_merge_with_wildcard(a, b, f):
+def dict_merge_with_wildcard(
+    a: Dict[KT, VT], b: Dict[KT, VT], f: Callable[[VT, VT], VT]
+) -> Dict[KT, VT]:
     if b is None:
         return a
 

@@ -31,11 +31,11 @@ class Config(OrderedDict):
         return Config(config)
 
     def get(
-        self, key: str, default: Optional[ConfigSnippet] = None
+        self, key: ProfileKey, default: Optional[ConfigSnippet] = None
     ) -> Optional[ConfigSnippet]:
         return super().get(key, default)
 
-    def profile(self, key: ProfileKey):
+    def profile(self, key: ProfileKey) -> Optional[ConfigSnippet]:
         return self.get(key, self.get(PROFILE_GLOBAL))
 
     def __add__(self, other: "Config") -> "Config":

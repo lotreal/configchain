@@ -1,11 +1,13 @@
 from abc import ABC, abstractmethod
 from collections import OrderedDict
 from os import path
+from typing import List, Optional
 
 import yaml
 
 from .snippet import ConfigSnippet
 from .source import ConfigSource
+from .types import ConfigFile, ConfigDict, ConfigValue, ConfigKey
 
 
 class BaseConfigLoader(OrderedDict, ABC):
@@ -14,32 +16,32 @@ class BaseConfigLoader(OrderedDict, ABC):
     Value: the config dict of yaml
     """
 
-    def __init__(self, *files: str):
+    def __init__(self, *files: ConfigFile):
         self._source = files
         self._includes = []
 
     @abstractmethod
-    def _parse_config(self, content):
+    def _parse_config(self, content) -> List[ConfigDict]:
         ...
 
-    def find(self, file, key):
+    def find(self, file: ConfigFile, key: ConfigKey) -> Optional[ConfigValue]:
         for snippet in self.get(file):
             v = snippet.get(key, None)
             if v is not None:
                 return v
         return None
 
-    def load(self):
+    def load(self) -> None:
         [self._load(file) for file in self._source]
 
-    def _read_file(self, file):
+    def _read_file(self, file: ConfigFile) -> str:
         key = path.abspath(file)
         if key in self.keys():
             return None
         with open(file, "r") as fh:
             return fh.read()
 
-    def _load(self, file: str, source=None) -> None:
+    def _load(self, file: ConfigFile, source: Optional[ConfigSource] = None) -> None:
         file = path.abspath(file)
         _conf = self._parse_config(self._read_file(file))
 
@@ -61,7 +63,7 @@ class BaseConfigLoader(OrderedDict, ABC):
             inc, source = self._includes.pop()
             self._load(inc, source)
 
-    def _process_directives(self, file, config: dict) -> dict:
+    def _process_directives(self, file: ConfigFile, config: ConfigDict) -> ConfigDict:
         workdir = path.dirname(file)
         includes = config.pop("@include", None)
         if includes is not None:
@@ -79,7 +81,7 @@ class BaseConfigLoader(OrderedDict, ABC):
 
 
 class YamlConfigLoader(BaseConfigLoader):
-    def _parse_config(self, content):
+    def _parse_config(self, content) -> List[ConfigDict]:
         if content is None:
             return []
         return yaml.load_all(content, Loader=yaml.SafeLoader)
