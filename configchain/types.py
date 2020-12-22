@@ -10,7 +10,7 @@ ConfigDict = Mapping[ConfigKey, ConfigValue]
 ProfileKey = str
 ProfileName = str
 
-PROFILE_WILDCARD = "*"
+WILDCARD = "*"
 PROFILE_NAME_KEY = "profile"
 CONFIG_NAME_KEY = ["group", "name"]
 

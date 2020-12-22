@@ -3,7 +3,7 @@ from functools import singledispatch
 from itertools import groupby
 from typing import Callable, Dict, List, Any
 import pprint
-from .types import KT, VT, PROFILE_WILDCARD
+from .types import KT, VT, WILDCARD
 
 
 def inspect(obj):
@@ -45,14 +45,14 @@ def dict_merge_with_wildcard(
         return a
 
     merged = copy(b)
-    wb = b.get(PROFILE_WILDCARD, None)
+    wb = b.get(WILDCARD, None)
     for k in a.keys():
         if k in b.keys():
             merged[k] = f(a[k], b[k])
         else:
             merged[k] = f(a[k], wb)
 
-    wa = a.get(PROFILE_WILDCARD, None)
+    wa = a.get(WILDCARD, None)
     if wa is not None:
         for k in b.keys():
             if k not in a.keys():

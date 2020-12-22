@@ -28,6 +28,8 @@ class ConfigSource:
         return MergedConfigSource(sources=list([self])) + other
 
     def find(self, key: ConfigKey) -> Optional[ConfigValue]:
+        if self.loader is None:
+            return None
         return self.loader.find(self.uri, key)
 
 

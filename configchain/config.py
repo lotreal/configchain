@@ -4,17 +4,16 @@ from operator import add
 from typing import List, Optional, Callable
 
 from .snippet import ConfigSnippet
-from .types import PROFILE_WILDCARD, ProfileKey, ProfileName, PROFILE_NAME_KEY
+from .types import WILDCARD, ProfileKey, ProfileName, PROFILE_NAME_KEY
 from .utils import list_groupby, dict_merge_with_wildcard
 
 
 class Config(OrderedDict):
     @classmethod
-    def from_snippets(
-        cls, snippets: List[ConfigSnippet], profile_key: ProfileKey = PROFILE_NAME_KEY
-    ) -> "Config":
+    def from_snippets(cls, snippets: List[ConfigSnippet], **kwargs) -> "Config":
+        profile = kwargs.get("profile", PROFILE_NAME_KEY)
         profile_getter: Callable[["ConfigSnippet"], ProfileName] = lambda x: x.get(
-            profile_key, PROFILE_WILDCARD
+            profile, WILDCARD
         )
 
         def groupby_profile_and_merge(
@@ -25,11 +24,9 @@ class Config(OrderedDict):
         profile_snippets = groupby_profile_and_merge(snippets)
         config = OrderedDict({profile_getter(s): s for s in profile_snippets})
 
-        wp = config.get(PROFILE_WILDCARD, None)
+        wp = config.get(WILDCARD, None)
         if wp is not None:
-            config.update(
-                {p: wp + c for p, c in config.items() if p != PROFILE_WILDCARD}
-            )
+            config.update({p: wp + c for p, c in config.items() if p != WILDCARD})
 
         return Config(config)
 
@@ -39,7 +36,7 @@ class Config(OrderedDict):
         return super().get(key, default)
 
     def profile(self, key: ProfileKey) -> Optional[ConfigSnippet]:
-        return self.get(key, self.get(PROFILE_WILDCARD))
+        return self.get(key, self.get(WILDCARD))
 
     def __add__(self, other: "Config") -> "Config":
         return dict_merge_with_wildcard(self, other, add)

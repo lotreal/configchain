@@ -1,0 +1,9 @@
+app: hello
+at: aws
+env:
+  - PROCESSES=32
+---
+profile: test
+at: docker
+env:
+  - PROCESSES=1

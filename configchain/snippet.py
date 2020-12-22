@@ -33,4 +33,7 @@ class ConfigSnippet(OrderedDict):
         )
 
     def find(self, key: ConfigKey) -> Optional[ConfigValue]:
-        return self.get(key, self.source.find(key))
+        v = self.get(key, None)
+        if v is not None:
+            return v
+        return self.source.find(key)
