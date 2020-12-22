@@ -1,0 +1,11 @@
+group: admin
+name: api
+
+environment:
+  - PAY_ENV=${profile}
+
+check:
+  http: /health/check
+
+---
+profile: testing

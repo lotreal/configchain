@@ -1,11 +1,11 @@
 from collections import OrderedDict
 from functools import reduce
 from operator import add
-from typing import List, Dict, Optional
+from typing import List, Optional
 
 from .snippet import ConfigSnippet
-from .types import PROFILE_GLOBAL, ProfileKey, KT
-from .utils import list_groupby, dict_merge
+from .types import PROFILE_GLOBAL, ProfileKey
+from .utils import list_groupby, dict_merge_with_wildcard
 
 
 class Config(OrderedDict):
@@ -30,15 +30,13 @@ class Config(OrderedDict):
 
         return Config(config)
 
-    def get(self, key: KT, default: Optional[ConfigSnippet] = None) -> Optional[ConfigSnippet]:
-        return OrderedDict.get(self, key, default)
+    def get(
+        self, key: str, default: Optional[ConfigSnippet] = None
+    ) -> Optional[ConfigSnippet]:
+        return super().get(key, default)
+
+    def profile(self, key: ProfileKey):
+        return self.get(key, self.get(PROFILE_GLOBAL))
 
     def __add__(self, other: "Config") -> "Config":
-        m = dict_merge(self, other, add)
-        g = m.get("*", None)
-        if g is not None:
-            for k, v in m.items():
-                if k == "*":
-                    continue
-                m[k] = g + m[k]
-        return m
+        return dict_merge_with_wildcard(self, other, add)

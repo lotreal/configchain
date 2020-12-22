@@ -16,7 +16,7 @@ def test_add():
 
 
 def test_add2():
-    a = ConfigSet.load("./tests/asset/default.yaml")
-    b = ConfigSet.load("./tests/asset/web.yaml")
+    a = ConfigSet.load("./tests/asset/defaults.yaml")
+    b = ConfigSet.load("./tests/asset/admin-api.yaml")
     c: ConfigSet = a + b
     assert c.get("user-api") is None

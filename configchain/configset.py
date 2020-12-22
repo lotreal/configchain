@@ -5,8 +5,8 @@ from typing import List, Optional
 from .config import Config
 from .loader import ConfigLoader
 from .snippet import ConfigSnippet
-from .types import KT
-from .utils import list_flatten, dict_merge
+from .types import PROFILE_GLOBAL
+from .utils import list_flatten, dict_merge_with_wildcard
 
 
 class ConfigSet(OrderedDict):
@@ -26,7 +26,7 @@ class ConfigSet(OrderedDict):
             if ids:
                 return "-".join(ids)
             else:
-                return "*"
+                return PROFILE_GLOBAL
 
         named_snippets = dict()
         for snippet in snippets:
@@ -40,15 +40,8 @@ class ConfigSet(OrderedDict):
         }
         return cls(named_configs)
 
-    def get(self, key: KT, default: Optional[Config]=None) -> Optional[Config]:
+    def get(self, key: str, default: Optional[Config] = None) -> Optional[Config]:
         return OrderedDict.get(self, key, default)
 
     def __add__(self, other):
-        m = dict_merge(self, other, add)
-        g = m.get("*", None)
-        if g is not None:
-            for k, v in m.items():
-                if k == "*":
-                    continue
-                m[k] = g + m[k]
-        return m
+        return dict_merge_with_wildcard(self, other, add)

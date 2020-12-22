@@ -4,7 +4,7 @@ from functools import singledispatch
 from itertools import groupby
 from typing import Callable, Dict, List, Any
 import pprint
-from .types import KT, VT
+from .types import KT, VT, PROFILE_GLOBAL
 
 
 def inspect(obj):
@@ -33,6 +33,26 @@ def dict_merge(
             merged[k] = f(a[k], b[k])
         else:
             merged[k] = b[k]
+    return merged
+
+
+def dict_merge_with_wildcard(a, b, f):
+    if b is None:
+        return a
+
+    merged = copy(b)
+    wb = b.get(PROFILE_GLOBAL, None)
+    for k in a.keys():
+        if k in b.keys():
+            merged[k] = f(a[k], b[k])
+        else:
+            merged[k] = f(a[k], wb)
+
+    wa = a.get(PROFILE_GLOBAL, None)
+    if wa is not None:
+        for k in b.keys():
+            if k not in a.keys():
+                merged[k] = f(wa, b[k])
     return merged
 
 

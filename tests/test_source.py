@@ -32,7 +32,7 @@ def test_add2():
 
 
 def test_add3():
-    assert str(cs("a", 1) + cs("a", 1)) == "a-1"
+    assert str(cs("a", 1) + cs("a", 1)) == "a:1"
 
 
 def test_eq():

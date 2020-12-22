@@ -1,0 +1,28 @@
+id: ${group}-${name}
+
+namespace: ${profile}
+
+environment: []
+
+container:
+  repository: ${group}/${name}
+  dockerfile: Dockerfile
+
+port: 80
+
+# https://www.consul.io/docs/agent/checks
+check:
+  http: /
+
+---
+profile: testing
+
+url: ${id}.melbdelivery.com
+---
+profile: uat
+
+url: ${id}-uat.melbdelivery.com
+---
+profile: production
+
+url: ${id}.easi.com.au
