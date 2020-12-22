@@ -20,7 +20,9 @@ class ConfigSource:
     def __repr__(self) -> str:
         return f"{self.name}:{self.index}"
 
-    def __add__(self, other: "ConfigSource") -> Union["ConfigSource", "MergedConfigSource"]:
+    def __add__(
+        self, other: "ConfigSource"
+    ) -> Union["ConfigSource", "MergedConfigSource"]:
         if self == other:
             return self
         return MergedConfigSource(sources=list([self])) + other

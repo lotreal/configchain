@@ -1,9 +1,9 @@
 from collections import OrderedDict
 from copy import copy, deepcopy
-from typing import Callable, Optional
+from typing import Optional
 
 from .source import ConfigSource
-from .types import PROFILE_WILDCARD, ConfigDict, ProfileName, ConfigKey, ConfigValue
+from .types import ConfigDict, ConfigKey, ConfigValue
 from .utils import dict_merge, config_merger
 
 
@@ -11,15 +11,6 @@ class ConfigSnippet(OrderedDict):
     def __init__(self, config: ConfigDict, source: ConfigSource):
         super().__init__(config)
         self.source = source
-
-    @property
-    def profile(
-        self,
-        getter: Callable[["ConfigSnippet"], ProfileName] = lambda x: x.get(
-            "profile", PROFILE_WILDCARD
-        ),
-    ) -> ProfileName:
-        return getter(self)
 
     def __add__(self, other: "ConfigSnippet") -> "ConfigSnippet":
         if other is None:

@@ -23,7 +23,7 @@ def test_add():
 
     assert id(c) != id(e)
     f = a + c
-    # print(f.sources)
+    assert str(f) == "a-0-b-1"
 
 
 def test_add2():
@@ -38,7 +38,3 @@ def test_add3():
 def test_eq():
     assert cs("a", 1) == cs("a", 1)
     assert cs("a", 1) + cs("b", 2) == cs("a", 1) + cs("b", 2)
-
-
-def test_set():
-    a = set({cs("a", 1)})

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from collections import OrderedDict
 from os import path
-from typing import List, Optional
+from typing import List, Optional, Any
 
 import yaml
 
@@ -16,7 +16,7 @@ class BaseConfigLoader(OrderedDict, ABC):
     Value: the config dict of yaml
     """
 
-    def __init__(self, *files: ConfigFile):
+    def __init__(self, *files: ConfigFile, **kwargs: Any):
         self._source = files
         self._includes = []
 
@@ -88,5 +88,5 @@ class YamlConfigLoader(BaseConfigLoader):
 
 
 class ConfigLoader(object):
-    def __new__(cls, *args, **kwargs):
+    def __new__(cls, *args: ConfigFile, **kwargs: Any):
         return YamlConfigLoader(*args, **kwargs)

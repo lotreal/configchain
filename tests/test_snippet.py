@@ -22,4 +22,3 @@ def test_add():
     s4 = s1 + s2 + s3
     assert s4.get("a") == 3
     assert str(s4.source) == "a-1-2-b-3"
-    assert s4.profile == "*"

@@ -9,4 +9,4 @@ from .types import ConfigFile
 
 
 def configchain(*files: ConfigFile, **kwargs: Any):
-    return reduce(add, [ConfigSet.load(f) for f in files])
+    return reduce(add, [ConfigSet.load(f, **kwargs) for f in files])

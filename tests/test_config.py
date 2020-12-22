@@ -1,7 +1,6 @@
 import pytest
 
 from configchain.config import Config
-from configchain.utils import inspect
 from conftest import snippet
 
 
@@ -24,17 +23,27 @@ def b():
 
 
 def test_config(a, b):
-    assert list(a.keys()) == ['*', 'test', 'uat']
+    assert list(a.keys()) == ["*", "test", "uat"]
     assert a.get("test").get("g") == 0
-    assert list(b.keys()) == ['*', 'test']
+    assert list(b.keys()) == ["*", "test"]
+
+
+def test_config2(a, b):
+    b = Config.from_snippets(
+        snippets=[snippet({"c": 1}), snippet({"tt": 2, "ttt": 3}),]
+    )
+    assert list(b.keys()) == ["*"]
+    p = b.get("*")
+    assert p.get("c") == 1
+    assert p.get("tt") == 2
+    assert p.get("ttt") == 3
 
 
 def test_add(a, b):
     c = a + b
-    assert list(c.keys()) == ['*', 'test', 'uat']
+    assert list(c.keys()) == ["*", "test", "uat"]
 
     test = c.get("test")
-    assert test.profile == "test"
     assert test.get("g") == 0
     assert test.get("c") == 1
     assert test.get("t") == 1
@@ -56,10 +65,9 @@ def test_add2(a):
         snippets=[snippet({"c": 1}), snippet({"profile": "prod", "tt": 2, "ttt": 3}),]
     )
     c = a + b
-    assert list(c.keys()) == ['*', 'prod', 'test', 'uat']
+    assert list(c.keys()) == ["*", "prod", "test", "uat"]
 
     p = c.get("prod")
-    assert p.profile == "prod"
     assert p.get("g") == 0
     assert p.get("c") == 1
     assert p.get("t") is None

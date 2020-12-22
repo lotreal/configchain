@@ -11,6 +11,8 @@ ProfileKey = str
 ProfileName = str
 
 PROFILE_WILDCARD = "*"
+PROFILE_NAME_KEY = "profile"
+CONFIG_NAME_KEY = ["group", "name"]
 
 KT = TypeVar("KT")
 VT = TypeVar("VT")
