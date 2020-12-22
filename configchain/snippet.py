@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from dataclasses import dataclass, field
 from typing import Dict, Optional, Any, Callable
 
@@ -7,7 +8,7 @@ from .utils import dict_merge, config_merger
 
 
 @dataclass(frozen=True)
-class ConfigSnippet:
+class ConfigSnippet():
     config: Dict[str, Any]
     source: ConfigSource
 
