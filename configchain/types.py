@@ -10,7 +10,7 @@ ConfigDict = Mapping[ConfigKey, ConfigValue]
 ProfileKey = str
 ProfileName = str
 
-PROFILE_GLOBAL = "*"
+PROFILE_WILDCARD = "*"
 
 KT = TypeVar("KT")
 VT = TypeVar("VT")

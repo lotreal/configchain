@@ -5,7 +5,7 @@ from typing import List, Optional, Any
 from .config import Config
 from .loader import ConfigLoader
 from .snippet import ConfigSnippet
-from .types import ConfigKey, ConfigFile, PROFILE_GLOBAL, ConfigName
+from .types import ConfigKey, ConfigFile, PROFILE_WILDCARD, ConfigName
 from .utils import list_flatten, dict_merge_with_wildcard
 
 
@@ -28,9 +28,9 @@ class ConfigSet(OrderedDict):
             if ids:
                 return "-".join(ids)
             else:
-                return PROFILE_GLOBAL
+                return PROFILE_WILDCARD
 
-        named_snippets = dict()
+        named_snippets = OrderedDict()
         for snippet in snippets:
             named_snippets.setdefault(name(snippet, name_getter), []).append(
                 snippet

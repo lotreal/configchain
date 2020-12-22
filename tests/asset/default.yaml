@@ -1,4 +1,0 @@
-default: yes
----
-profile: testing
-test: true

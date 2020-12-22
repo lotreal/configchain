@@ -17,12 +17,12 @@ check:
 ---
 profile: testing
 
-url: ${id}.melbdelivery.com
+url: ${id}.example.net
 ---
 profile: uat
 
-url: ${id}-uat.melbdelivery.com
+url: ${id}-uat.example.net
 ---
 profile: production
 
-url: ${id}.easi.com.au
+url: ${id}.example.com

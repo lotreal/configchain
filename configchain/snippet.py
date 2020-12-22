@@ -3,7 +3,7 @@ from copy import copy, deepcopy
 from typing import Callable, Optional
 
 from .source import ConfigSource
-from .types import PROFILE_GLOBAL, ConfigDict, ProfileName, ConfigKey, ConfigValue
+from .types import PROFILE_WILDCARD, ConfigDict, ProfileName, ConfigKey, ConfigValue
 from .utils import dict_merge, config_merger
 
 
@@ -16,7 +16,7 @@ class ConfigSnippet(OrderedDict):
     def profile(
         self,
         getter: Callable[["ConfigSnippet"], ProfileName] = lambda x: x.get(
-            "profile", PROFILE_GLOBAL
+            "profile", PROFILE_WILDCARD
         ),
     ) -> ProfileName:
         return getter(self)

@@ -4,7 +4,7 @@ from operator import add
 from typing import List, Optional
 
 from .snippet import ConfigSnippet
-from .types import PROFILE_GLOBAL, ProfileKey
+from .types import PROFILE_WILDCARD, ProfileKey
 from .utils import list_groupby, dict_merge_with_wildcard
 
 
@@ -18,15 +18,12 @@ class Config(OrderedDict):
         ) -> List[ConfigSnippet]:
             return [reduce(add, g) for g in list_groupby(snippets, lambda s: s.profile)]
 
-        gs = groupby_profile_and_merge(snippets)
-        config = OrderedDict()
-        for snippet in gs:
-            config.setdefault(snippet.profile, snippet)
+        profile_snippets = groupby_profile_and_merge(snippets)
+        config = OrderedDict({s.profile: s for s in profile_snippets})
 
-        global_profile = config.pop(PROFILE_GLOBAL, None)
-        if global_profile is not None:
-            config = {p: global_profile + c for p, c in config.items()}
-            config.update({PROFILE_GLOBAL: global_profile})
+        wp = config.get(PROFILE_WILDCARD, None)
+        if wp is not None:
+            config.update({p: wp + c for p, c in config.items() if p != PROFILE_WILDCARD})
 
         return Config(config)
 
@@ -36,7 +33,7 @@ class Config(OrderedDict):
         return super().get(key, default)
 
     def profile(self, key: ProfileKey) -> Optional[ConfigSnippet]:
-        return self.get(key, self.get(PROFILE_GLOBAL))
+        return self.get(key, self.get(PROFILE_WILDCARD))
 
     def __add__(self, other: "Config") -> "Config":
         return dict_merge_with_wildcard(self, other, add)

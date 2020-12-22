@@ -24,14 +24,14 @@ def b():
 
 
 def test_config(a, b):
-    assert list(a.keys()) == ["test", "uat", "*"]
+    assert list(a.keys()) == ['*', 'test', 'uat']
     assert a.get("test").get("g") == 0
-    assert list(b.keys()) == ["test", "*"]
+    assert list(b.keys()) == ['*', 'test']
 
 
 def test_add(a, b):
     c = a + b
-    assert list(c.keys()) == ["test", "*", "uat"]
+    assert list(c.keys()) == ['*', 'test', 'uat']
 
     test = c.get("test")
     assert test.profile == "test"
@@ -56,7 +56,7 @@ def test_add2(a):
         snippets=[snippet({"c": 1}), snippet({"profile": "prod", "tt": 2, "ttt": 3}),]
     )
     c = a + b
-    assert list(c.keys()) == ["prod", "*", "test", "uat"]
+    assert list(c.keys()) == ['*', 'prod', 'test', 'uat']
 
     p = c.get("prod")
     assert p.profile == "prod"
