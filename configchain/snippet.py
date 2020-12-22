@@ -1,33 +1,33 @@
 from collections import OrderedDict
-from dataclasses import dataclass, field
-from typing import Dict, Optional, Any, Callable
+from copy import copy, deepcopy
+from typing import Dict, Any, Callable
 
 from .source import ConfigSource
-from .types import KT, VT
 from .utils import dict_merge, config_merger
 
 
-@dataclass(frozen=True)
-class ConfigSnippet():
-    config: Dict[str, Any]
-    source: ConfigSource
+class ConfigSnippet(OrderedDict):
+    def __init__(self, config: Dict[str, Any], source: ConfigSource):
+        super().__init__(config)
+        self.source = source
 
-    profile_getter: Callable[["ConfigSnippet"], str] = field(
-        default=lambda x: x.config.get("profile", "*"), repr=False
-    )
-
-    def get(self, k: KT, v: Optional[VT] = None) -> VT:
-        return self.config.get(k, v)
+    profile_getter: Callable[["ConfigSnippet"], str] = lambda x: x.get("profile", "*")
 
     @property
     def profile(self):
-        return self.profile_getter(self)
+        return self.profile_getter()
 
     def __add__(self, other: "ConfigSnippet"):
         return ConfigSnippet(
-            config=dict_merge(self.config, other.config, config_merger),
+            config=dict_merge(self, other, config_merger),
             source=self.source + other.source,
         )
 
+    def __copy__(self):
+        return ConfigSnippet(config={k: copy(v) for k, v in self.items()}, source=self.source)
+
+    def __deepcopy__(self, memodict={}):
+        return ConfigSnippet(config={k: deepcopy(v, memodict) for k, v in self.items()}, source=self.source)
+
     def find(self, key):
-        return self.config.get(key, self.source.find(key))
+        return self.get(key, self.source.find(key))

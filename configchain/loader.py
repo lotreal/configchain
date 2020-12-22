@@ -24,7 +24,7 @@ class BaseConfigLoader(OrderedDict, ABC):
 
     def find(self, file, key):
         for snippet in self.get(file):
-            v = snippet.config.get(key, None)
+            v = snippet.get(key, None)
             if v is not None:
                 return v
         return None
