@@ -56,7 +56,7 @@ def test_add(a, b):
     assert uat.get("u") == 2
 
     assert c.get("prod") is None
-    prod = c.profile("prod")
+    prod = c.get_profile("prod")
     assert list(prod.keys()) == ["g", "c"]
 
 

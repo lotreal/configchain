@@ -8,5 +8,5 @@ from .configset import ConfigSet
 from .types import ConfigFile
 
 
-def configchain(*files: ConfigFile, **kwargs: Any):
+def configchain(*files: ConfigFile, **kwargs: Any) -> ConfigSet:
     return reduce(add, [ConfigSet.load(f, **kwargs) for f in files])

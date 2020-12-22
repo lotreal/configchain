@@ -30,13 +30,13 @@ class Config(OrderedDict):
 
         return Config(config)
 
-    def get(
-        self, key: ProfileKey, default: Optional[ConfigSnippet] = None
-    ) -> Optional[ConfigSnippet]:
-        return super().get(key, default)
-
-    def profile(self, key: ProfileKey) -> Optional[ConfigSnippet]:
-        return self.get(key, self.get(WILDCARD))
-
     def __add__(self, other: "Config") -> "Config":
         return dict_merge_with_wildcard(self, other, add)
+
+    def profile_names(self) -> List[ProfileName]:
+        return self.keys()
+
+    def get_profile(
+        self, key: ProfileKey, default: Optional[ConfigSnippet] = WILDCARD
+    ) -> Optional[ConfigSnippet]:
+        return self.get(key, self.get(default, None))
