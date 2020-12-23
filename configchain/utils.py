@@ -11,11 +11,7 @@ def inspect(obj):
     pp.pprint(obj)
 
 
-def list_flatten(t: List[List[Any]]) -> List[Any]:
-    return [item for sublist in t for item in sublist]
-
-
-def list_groupby(iterable: List[Any], projection) -> List[List[Any]]:
+def list_groupby(iterable: List[VT], projection: Callable[[VT], str]) -> List[List[VT]]:
     return [list(it) for k, it in groupby(sorted(iterable, key=projection), projection)]
 
 

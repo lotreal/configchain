@@ -1,3 +1,4 @@
+from itertools import chain
 from typing import List, Optional, Any, Union
 from collections import OrderedDict
 from operator import add
@@ -7,7 +8,7 @@ from .config import Config
 from .loader import ConfigLoader
 from .snippet import ConfigSnippet
 from .types import ConfigKey, ConfigFile, WILDCARD, ConfigName, ConfigNameGetter
-from .utils import list_flatten, dict_merge_with_wildcard
+from .utils import dict_merge_with_wildcard
 
 
 class ConfigSet(OrderedDict):
@@ -15,12 +16,11 @@ class ConfigSet(OrderedDict):
     def load(cls, *args: ConfigFile, **kwargs: Any) -> "ConfigSet":
         loader = ConfigLoader(*args, **kwargs)
         loader.load()
-        snippets = list_flatten(loader.values())
 
         named_snippets = OrderedDict()
-        for snippet in snippets:
+        for snippet in chain(*loader.values()):
             named_snippets.setdefault(
-                get_config_name(snippet, kwargs.get("name", "${group}-${name}")), [],
+                get_config_name(kwargs.get("name", "${group}-${name}"), snippet), [],
             ).append(snippet)
 
         named_configs = {
@@ -42,7 +42,7 @@ class ConfigSet(OrderedDict):
 
 
 def get_config_name_by_fields(
-    snippet: ConfigSnippet, from_fields: List[ConfigKey]
+    from_fields: List[ConfigKey], snippet: ConfigSnippet
 ) -> ConfigName:
     ids = [
         str(n) for n in [snippet.find(field) for field in from_fields] if n is not None
@@ -53,7 +53,7 @@ def get_config_name_by_fields(
         return WILDCARD
 
 
-def get_config_name_by_statement(snippet: ConfigSnippet, getter: str):
+def get_config_name_by_statement(getter: str, snippet: ConfigSnippet):
     reg = r"\${(\w+)}"
     matches = re.findall(reg, getter)
     vars = {v: snippet.find(v) for v in matches}
@@ -78,12 +78,12 @@ def get_config_name_by_statement(snippet: ConfigSnippet, getter: str):
 
 
 def get_config_name(
-    snippet: ConfigSnippet, getter: Union[str, ConfigNameGetter]
+    getter: Union[str, ConfigNameGetter], snippet: ConfigSnippet
 ) -> ConfigName:
     if callable(getter):
         return getter(snippet)
     if isinstance(getter, str):
-        return get_config_name_by_statement(snippet, getter)
+        return get_config_name_by_statement(getter, snippet)
     if isinstance(getter, list):
-        return get_config_name_by_fields(snippet, getter)
+        return get_config_name_by_fields(getter, snippet)
     return WILDCARD

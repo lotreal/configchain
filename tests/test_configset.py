@@ -18,24 +18,28 @@ def test_add():
 
 def test_get_config_name_by_statement():
     a = snippet({"g": 1, "b": 2, "a": 3})
-    assert get_config_name(a, "[${a}/${g}]") == "[3/1]"
+    assert get_config_name("[${a}/${g}]", a) == "[3/1]"
 
 
 def test_get_config_name_by_fields():
     a = snippet({"g": 1, "b": 2, "a": 3})
-    assert get_config_name(a, ["a", "g"]) == "3-1"
+    assert get_config_name(["a", "g"], a) == "3-1"
 
 
 def test_get_config_name_by_statement_str():
     a = snippet({"g": 1, "b": 2, "a": 3})
-    assert get_config_name(a, "aa") == "aa"
+    assert get_config_name("aa", a) == "aa"
 
 
 def test_get_config_name_by_statement_wildcard():
     a = snippet({"g": 1, "b": 2, "a": 3})
-    assert get_config_name(a, "${aa}") == "*"
+    assert get_config_name("${aa}", a) == "*"
 
 
 def test_get_config_name_by_fields_wildcard():
     a = snippet({"g": 1, "b": 2, "a": 3})
-    assert get_config_name(a, ["aa", "gg"]) == "*"
+    assert get_config_name(["aa", "gg"], a) == "*"
+
+def test_get_config_name_by_lambda():
+    a = snippet({"g": 1, "b": 2, "a": 3})
+    assert get_config_name(lambda x: "aa", a) == "aa"
