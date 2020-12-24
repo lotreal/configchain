@@ -3,7 +3,7 @@ from conftest import snippet
 
 
 def test_configset():
-    configset = ConfigSet.load("./tests/asset/api.yaml")
+    configset = ConfigSet.load("./tests/asset/api.yaml", name="${group}-${name}")
     assert list(configset.keys()) == ["user-api", "user-gateway"]
     assert list(configset.get("user-api").keys()) == ["*", "stage", "testing"]
     assert list(configset.get("user-gateway").keys()) == ["*", "testing"]

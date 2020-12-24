@@ -20,7 +20,7 @@ class ConfigSet(OrderedDict):
         named_snippets = OrderedDict()
         for snippet in chain(*loader.values()):
             named_snippets.setdefault(
-                get_config_name(kwargs.get("name", "${group}-${name}"), snippet), [],
+                get_config_name(kwargs.get("name", WILDCARD), snippet), [],
             ).append(snippet)
 
         named_configs = {
