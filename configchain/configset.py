@@ -1,13 +1,14 @@
+from functools import singledispatch
 from itertools import chain
-from typing import List, Optional, Any, Union
-from collections import OrderedDict
+from typing import List, Optional, Any
+from collections import OrderedDict, abc
 from operator import add
 import re
 
 from .config import Config
 from .loader import ConfigLoader
 from .snippet import ConfigSnippet
-from .types import ConfigKey, ConfigFile, WILDCARD, ConfigName, ConfigNameGetter
+from .types import ConfigFile, WILDCARD, ConfigName
 from .utils import dict_merge_with_wildcard
 
 
@@ -41,21 +42,20 @@ class ConfigSet(OrderedDict):
         return self.get(key, default)
 
 
-def get_config_name_by_fields(
-    from_fields: List[ConfigKey], snippet: ConfigSnippet
-) -> ConfigName:
-    ids = [
-        str(n) for n in [snippet.find(field) for field in from_fields] if n is not None
-    ]
-    if ids:
-        return "-".join(ids)
-    else:
-        return WILDCARD
+@singledispatch
+def get_config_name(_getter, _snippet: ConfigSnippet) -> ConfigName:
+    return WILDCARD
 
 
-def get_config_name_by_statement(getter: str, snippet: ConfigSnippet):
+@get_config_name.register
+def _(config_name_getter: abc.Callable, snippet: ConfigSnippet) -> ConfigName:
+    return config_name_getter(snippet)
+
+
+@get_config_name.register
+def _(config_name_statement: str, snippet: ConfigSnippet) -> ConfigName:
     reg = r"\${(\w+)}"
-    matches = re.findall(reg, getter)
+    matches = re.findall(reg, config_name_statement)
     vars = {v: snippet.find(v) for v in matches}
     if (
         len(matches) > 0
@@ -74,16 +74,17 @@ def get_config_name_by_statement(getter: str, snippet: ConfigSnippet):
         (key,) = var.groups()
         return str(vars.get(key, None))
 
-    return re.sub(reg, sub, getter)
+    return re.sub(reg, sub, config_name_statement)
 
 
-def get_config_name(
-    getter: Union[str, ConfigNameGetter], snippet: ConfigSnippet
-) -> ConfigName:
-    if callable(getter):
-        return getter(snippet)
-    if isinstance(getter, str):
-        return get_config_name_by_statement(getter, snippet)
-    if isinstance(getter, list):
-        return get_config_name_by_fields(getter, snippet)
-    return WILDCARD
+@get_config_name.register
+def _(config_name_keys: abc.MutableSequence, snippet: ConfigSnippet) -> ConfigName:
+    ids = [
+        str(n)
+        for n in [snippet.find(key) for key in config_name_keys]
+        if n is not None
+    ]
+    if ids:
+        return "-".join(ids)
+    else:
+        return WILDCARD

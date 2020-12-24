@@ -40,6 +40,12 @@ def test_get_config_name_by_fields_wildcard():
     a = snippet({"g": 1, "b": 2, "a": 3})
     assert get_config_name(["aa", "gg"], a) == "*"
 
+
 def test_get_config_name_by_lambda():
     a = snippet({"g": 1, "b": 2, "a": 3})
     assert get_config_name(lambda x: "aa", a) == "aa"
+
+
+def test_get_config_name_by_int():
+    a = snippet({"g": 1, "b": 2, "a": 3})
+    assert get_config_name(1, a) == "*"

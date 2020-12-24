@@ -1,4 +1,4 @@
-from typing import TypeVar, List, Union, Mapping, Callable
+from typing import TypeVar, List, Union, Mapping
 
 ConfigFile = str
 ConfigName = str
@@ -13,7 +13,6 @@ ProfileName = str
 WILDCARD = "*"
 PROFILE_NAME_KEY = "profile"
 CONFIG_NAME_KEY = ["group", "name"]
-ConfigNameGetter = Callable[["ConfigSnippet"], ConfigName]
 
 KT = TypeVar("KT")
 VT = TypeVar("VT")
