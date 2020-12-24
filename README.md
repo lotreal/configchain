@@ -12,7 +12,7 @@ from configchain.utils import inspect
 
 cs = configchain("./tests/asset/a.yaml", "./tests/asset/b.yaml", name="app-${app}", profile="profile")
 
-ConfigSet([('app-hello',
+... ConfigSet([('app-hello',
             Config([('*',
                      ConfigSnippet([('by', 'tao'),
                                     ('env', ['ENV=${profile}', 'PROCESSES=32']),
