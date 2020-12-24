@@ -8,9 +8,9 @@ The key feature of ConfigChain, is the ability to dynamically create a hierarchi
 
 `````python
 from configchain import configchain
-from configchain.utils import inspect
 
 cs = configchain("./tests/asset/a.yaml", "./tests/asset/b.yaml", name="app-${app}", profile="profile")
+print(cs)
 
 ... ConfigSet([('app-hello',
             Config([('*',
