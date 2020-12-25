@@ -49,7 +49,8 @@ class MergedConfigSource:
     def __str__(self) -> str:
         def create_breadcrumb(a: Tuple[str, str], s: ConfigSource) -> Tuple[str, str]:
             name, breadcrumb = a
-            if (n := s.name) == name:
+            n = s.name
+            if n == name:
                 return n, f"{breadcrumb}-{s.index}"
             else:
                 return n, f"{breadcrumb}-{n}-{s.index}"
