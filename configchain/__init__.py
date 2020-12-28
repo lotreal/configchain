@@ -1,12 +1,11 @@
 from functools import reduce
 from operator import add
-from typing import Any
 
 from .snippet import ConfigSnippet
 from .config import Config
 from .configset import ConfigSet
-from .types import ConfigFile
+from .types import ConfigFile, ConfigChainOptions
 
 
-def configchain(*files: ConfigFile, **kwargs: Any) -> ConfigSet:
+def configchain(*files: ConfigFile, **kwargs: ConfigChainOptions) -> ConfigSet:
     return reduce(add, [ConfigSet.load(f, **kwargs) for f in files])

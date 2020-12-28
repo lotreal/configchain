@@ -1,6 +1,6 @@
 from functools import singledispatch
 from itertools import chain
-from typing import List, Optional, Any
+from typing import List, Optional
 from collections import OrderedDict, abc
 from operator import add
 import re
@@ -8,13 +8,13 @@ import re
 from .config import Config
 from .loader import ConfigLoader
 from .snippet import ConfigSnippet
-from .types import ConfigFile, WILDCARD, ConfigName
+from .types import ConfigFile, WILDCARD, ConfigName, ConfigChainOptions
 from .utils import dict_merge_with_wildcard
 
 
 class ConfigSet(OrderedDict):
     @classmethod
-    def load(cls, *args: ConfigFile, **kwargs: Any) -> "ConfigSet":
+    def load(cls, *args: ConfigFile, **kwargs: ConfigChainOptions) -> "ConfigSet":
         loader = ConfigLoader(*args, **kwargs)
         loader.load()
 
