@@ -8,6 +8,7 @@ setuptools = "*"
 wheel = "*"
 twine = "*"
 pytest = "*"
+bump2version = "*"
 
 [packages]
 pyyaml = "*"
