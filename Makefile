@@ -7,6 +7,9 @@ update:
 	pipenv update
 	pipenv lock -r | sed '/^-i/d' | sed '/^--extra-index-url/d' > requirements.txt
 
+upgrade:
+	bump2version patch
+
 build: clean
 	python setup.py sdist bdist_wheel
 
