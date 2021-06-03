@@ -64,6 +64,9 @@ class BaseConfigLoader(OrderedDict, ABC):
             self._load(inc, source)
 
     def _process_directives(self, file: ConfigFile, config: ConfigDict) -> ConfigDict:
+        if config is None:
+            return None
+
         workdir = path.dirname(file)
         includes = config.pop("@include", None)
         if includes is not None:
