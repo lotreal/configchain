@@ -6,7 +6,7 @@ from .config import Config
 from .configset import ConfigSet
 from .types import ConfigFile, ConfigChainOptions
 
-__version__ = "0.3.8"
+__version__ = "0.3.9"
 
 
 def configchain(*files: ConfigFile, **kwargs: ConfigChainOptions) -> ConfigSet:
