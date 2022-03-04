@@ -69,3 +69,23 @@ def _(a: dict, b: dict):
 @config_merger.register
 def _(a: list, b: list):
     return a + b
+
+
+@singledispatch
+def config_merger(_, b):
+    return b
+
+
+@config_merger.register
+def _(a: dict, b: dict):
+    return dict_merge(a, b, config_merger)
+
+
+@config_merger.register
+def _(a: list, b: list):
+    return a + b
+
+
+@config_merger.register
+def _(a: tuple, b: tuple):
+    return a + b
