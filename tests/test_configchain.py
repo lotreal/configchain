@@ -8,7 +8,7 @@ def test_a():
     # cs = configchain("./tests/asset/a.yaml", "./tests/asset/b.yaml", group_by=ValueGrouper("${group}-${name}", "profile"))
     cs = configchain("./tests/asset/a.yaml", "./tests/asset/b.yaml", profile="profile")
     assert list(cs.config_names()) == ["*"]
-    assert list(cs.get_config("*").profile_names()) == ["*", "test"]
+    assert list(cs.get("*").profile_names()) == ["*", "test"]
     # print()
     inspect(cs)
     # import yaml
@@ -18,7 +18,7 @@ def test_a():
 def test_a_no_profile():
     cs = configchain("./tests/asset/a.yaml", "./tests/asset/b.yaml", profile="foo")
     assert list(cs.config_names()) == ["*"]
-    assert list(cs.get_config("*").profile_names()) == ["*"]
+    assert list(cs.get("*").profile_names()) == ["*"]
     print()
     inspect(cs)
 

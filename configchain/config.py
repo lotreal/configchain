@@ -5,7 +5,7 @@ from typing import List, Optional, Callable
 
 from .snippet import ConfigSnippet
 from .types import WILDCARD, ProfileKey, ProfileName, PROFILE_NAME_KEY, ConfigChainOptions
-from .utils import list_groupby, dict_merge_with_wildcard
+from .utils import list_groupby, dict_merge_with_wildcard, merge_profile_with_wildcard
 
 
 class Config(OrderedDict):
@@ -23,11 +23,7 @@ class Config(OrderedDict):
 
         profile_snippets = groupby_profile_and_merge(snippets)
         config = OrderedDict({profile_getter(s): s for s in profile_snippets})
-
-        wp = config.get(WILDCARD, None)
-        if wp is not None:
-            config.update({p: wp + c for p, c in config.items() if p != WILDCARD})
-
+        merge_profile_with_wildcard(config)
         return Config(config)
 
     def __add__(self, other: "Config") -> "Config":

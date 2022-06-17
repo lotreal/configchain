@@ -9,7 +9,7 @@ from .config import Config
 from .loader import ConfigLoader
 from .snippet import ConfigSnippet
 from .types import ConfigFile, WILDCARD, ConfigName, ConfigChainOptions
-from .utils import dict_merge_with_wildcard
+from .utils import dict_merge_with_wildcard, merge_profile_with_wildcard
 
 
 class ConfigSet(OrderedDict):
@@ -28,6 +28,8 @@ class ConfigSet(OrderedDict):
             name: Config.from_snippets(snippets, **kwargs)
             for name, snippets in named_snippets.items()
         }
+
+        merge_profile_with_wildcard(named_configs)
         return cls(named_configs)
 
     def __add__(self, other: "ConfigSet") -> "ConfigSet":
@@ -35,11 +37,6 @@ class ConfigSet(OrderedDict):
 
     def config_names(self) -> List[ConfigName]:
         return self.keys()
-
-    def get_config(
-        self, key: ConfigName, default: Optional[Config] = None
-    ) -> Optional[Config]:
-        return self.get(key, default)
 
 
 @singledispatch
@@ -80,9 +77,7 @@ def _(config_name_statement: str, snippet: ConfigSnippet) -> ConfigName:
 @get_config_name.register
 def _(config_name_keys: abc.MutableSequence, snippet: ConfigSnippet) -> ConfigName:
     ids = [
-        str(n)
-        for n in [snippet.find(key) for key in config_name_keys]
-        if n is not None
+        str(n) for n in [snippet.find(key) for key in config_name_keys] if n is not None
     ]
     if ids:
         return "-".join(ids)

@@ -89,3 +89,16 @@ def _(a: list, b: list):
 @config_merger.register
 def _(a: tuple, b: tuple):
     return a + b
+
+
+def merge_profile_with_wildcard(config_object: Dict):
+    """ merge profile config with * """
+    wildcard_config = config_object.get(WILDCARD, None)
+    if wildcard_config is not None:
+        config_object.update(
+            {
+                profile_name: wildcard_config + profile_config
+                for profile_name, profile_config in config_object.items()
+                if profile_name != WILDCARD
+            }
+        )

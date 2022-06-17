@@ -1,0 +1,5 @@
+docker: service
+---
+'@include':
+  - web.yaml
+  - gateway.yaml

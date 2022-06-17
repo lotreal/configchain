@@ -16,7 +16,7 @@ class BaseConfigLoader(OrderedDict, ABC):
     Value: the config dict of yaml
     """
 
-    def __init__(self, *files: ConfigFile, **kwargs: ConfigChainOptions):
+    def __init__(self, *files: List[ConfigFile], **kwargs: ConfigChainOptions):
         self._source = files
         self._includes = []
 
@@ -42,11 +42,14 @@ class BaseConfigLoader(OrderedDict, ABC):
             return fh.read()
 
     def _load(self, file: ConfigFile, source: Optional[ConfigSource] = None) -> None:
+        # TODO
+        # reader = LocalFileReader(".")
+        # reader.read(file)
         file = path.abspath(file)
         _conf = self._parse_config(self._read_file(file))
 
         configs = [self._process_directives(file, c) for c in _conf]
-        configs = [dc for dc in configs if dc]
+        configs = [dc for dc in configs if dc] # filter None
 
         def gs(config, file, index, ps=None):
             source = ConfigSource(uri=file, index=index, loader=self)
@@ -74,7 +77,7 @@ class BaseConfigLoader(OrderedDict, ABC):
                 [
                     (
                         path.abspath(path.join(workdir, f)),
-                        ConfigSource(uri=file, index=0, loader=self),
+                        ConfigSource(uri=file, index=0, loader=self), # TODO use real index
                     )
                     for f in includes
                 ]

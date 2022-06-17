@@ -5,3 +5,5 @@ from: web
 ---
 profile: testing
 web: test
+
+docker: service2
