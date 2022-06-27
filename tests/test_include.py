@@ -1,7 +1,28 @@
 from configchain import configchain
 
 
+class GithubLoader:
+    repository: str
+
+    def __init__(self, repository, path=""):
+        pass
+
+
 def test_configset():
+    """
+    configchain(
+        "default.yaml",
+        "https://github.com/infinitas-plus/user-service/blob/main/.cmdb.yaml",
+        GithubLoader(repository="infinitas-plus/user-service", path="/.cmdb.yaml"),
+    )
+    configset = configchain(
+        "./tests/asset/defaults.yaml",
+        "./tests/asset/multi.yaml",
+        GithubLoader(repository="infinitas-plus/user-service", path="/.cmdb.yaml"),
+        name="${group}-${name}",
+        loader=GithubLoader(repository="infinitas-plus/search-service"),
+    )
+    """
     configset = configchain("./tests/asset/multi.yaml", name="${group}-${name}")
     assert list(configset.keys()) == ["*", "user-gateway", "user-web"]
     assert list(configset.get("user-web").keys()) == ["*", "testing"]
