@@ -48,7 +48,10 @@ class ConfigSet(OrderedDict):
 
         config_name_statement = kwargs.get("name", WILDCARD)
 
-        auto_complete(config_name_statement, loader)
+        try:
+            auto_complete(config_name_statement, loader)
+        except:
+            pass
 
         named_snippets = OrderedDict()
         for snippet in chain(*loader.values()):
